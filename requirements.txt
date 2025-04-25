@@ -1,5 +1,6 @@
 streamlit
-tensorflow==2.13.0
+tensorflow==2.17.1
 scikit-learn
 joblib
 numpy
+python_version<3.12
