@@ -4,8 +4,17 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import joblib
 import numpy as np
 
-model = load_model('SpamDetectModel.h5')
-tokenizer = joblib.load('tokenizer.pkl')
+try:
+    model = load_model('SpamDetectModel.h5')
+except Exception as e:
+    st.error("❌ Failed to load model. Make sure it's compatible and available.")
+    st.exception(e)
+
+try:
+    tokenizer = joblib.load('tokenizer.pkl')
+except Exception as e:
+    st.error("❌ Failed to load tokenizer. Ensure 'tokenizer.pkl' is present.")
+    st.exception(e)
 
 st.set_page_config(page_title="Spam Detector", page_icon="🚫", layout="centered")
 st.title("📩 SMS/Message Spam Detector")
@@ -24,4 +33,4 @@ if st.button("🔍 Check Spam"):
         label = "🚫 Spam" if prediction > 0.5 else "✅ Not Spam"
 
         st.markdown(f"### Prediction: **{label}**")
-        st.progress(float(prediction) if prediction <= 1 else 1)
+        st.progress(min(float(prediction), 1.0))
