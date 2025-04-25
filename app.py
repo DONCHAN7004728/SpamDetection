@@ -11,7 +11,7 @@ model = load_model('SpamDetectModel.h5', compile=False)
 
 
 tokenizer = Tokenizer(num_words=10000, oov_token="<OOV>")
-=
+
 
 st.title("🚫 Spam Message Detector")
 st.markdown("Enter a message below to check if it's spam or not.")
