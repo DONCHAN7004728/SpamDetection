@@ -1,36 +1,38 @@
 import streamlit as st
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-import joblib
 import numpy as np
+from keras.models import load_model
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 
-try:
-    model = load_model('SpamDetectModel.h5')
-except Exception as e:
-    st.error("❌ Failed to load model. Make sure it's compatible and available.")
-    st.exception(e)
-
-try:
-    tokenizer = joblib.load('tokenizer.pkl')
-except Exception as e:
-    st.error("❌ Failed to load tokenizer. Ensure 'tokenizer.pkl' is present.")
-    st.exception(e)
 
 st.set_page_config(page_title="Spam Detector", page_icon="🚫", layout="centered")
-st.title("📩 SMS/Message Spam Detector")
-st.markdown("Enter a message below to check if it's **Spam** or **Not Spam**.")
 
-user_input = st.text_area("✉️ Message Text", height=150)
 
-if st.button("🔍 Check Spam"):
+model = load_model('SpamDetectModel.h5', compile=False)
+
+tokenizer = Tokenizer(num_words=10000, oov_token="<OOV>")
+
+
+st.title("🚫 Spam Message Detector")
+st.markdown("Enter a message below to check if it's spam or not.")
+
+
+user_input = st.text_area("📩 Enter your message here", height=150)
+
+if st.button("Detect Spam"):
     if user_input.strip() == "":
-        st.warning("⚠️ Please enter a message to analyze.")
+        st.warning("Please enter a message first.")
     else:
-        sequence = tokenizer.texts_to_sequences([user_input])
-        padded = pad_sequences(sequence, maxlen=7735)
+
+        sequences = tokenizer.texts_to_sequences([user_input])
+        padded = pad_sequences(sequences, maxlen=100)
+
 
         prediction = model.predict(padded)[0][0]
-        label = "🚫 Spam" if prediction > 0.5 else "✅ Not Spam"
 
-        st.markdown(f"### Prediction: **{label}**")
-        st.progress(min(float(prediction), 1.0))
+    
+        if prediction > 0.5:
+            st.error("🚨 This message is likely **Spam**.")
+        else:
+            st.success("✅ This message is **Not Spam**.")
+
