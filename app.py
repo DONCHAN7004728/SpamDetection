@@ -19,7 +19,7 @@ if user_input.strip() == "":
     st.warning("⚠️ Please enter a valid message.")
 else:
     sequence = tokenizer.texts_to_sequences([user_input])
-print(sequence)
+    print(sequence)
 
 
 
