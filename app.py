@@ -15,7 +15,12 @@ tokenizer = Tokenizer(num_words=10000, oov_token="<OOV>")
 st.title("🚫 Spam Message Detector")
 st.markdown("Enter a message below to check if it's spam or not.")
 
-user_input = st.text_area("📩 Enter your message here", height=150)
+if user_input.strip() == "":
+    st.warning("⚠️ Please enter a valid message.")
+else:
+    sequence = tokenizer.texts_to_sequences([user_input])
+print(sequence)
+
 
 
 if st.button("Detect Spam"):
